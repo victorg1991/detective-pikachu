@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Picture Filter</title>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      canvas {
+        max-width: 600px;
+      }
+
+      .section {
+        margin: 2px;
+      }
+    </style>
+    <link rel="stylesheet" href="bulma.min.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="section">
+          <label class="button is-info" for="fileInput">Select an image</label>
+          <input class="is-sr-only" id="fileInput" type="file" accept=".jpg, .jpeg, .png" />
+      </div>
+      <h1 class="title is-1">Original</h1>
+      <canvas id="original-canvas"></canvas>
+      <div class="section">
+        <button class="button is-link is-outlined">Grayscale</button>
+        <button class="button is-link is-outlined">Transparency</button>
+        <button class="button is-link is-outlined">Sephia</button>
+      </div>
+      <div id="loading">
+        Loading...
+      </div>
+      <progress id="loading" class="progress is-info" value="0" max="100"></progress>
+      <h1 class="title is-1">Filter</h1>
+      <canvas id="filtered-canvas"></canvas>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById('fileInput');
+      const canvas = document.getElementById('original-canvas');
+      const filteredCanvas = document.getElementById('filtered-canvas');
+      const loading = document.getElementById('loading');
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "detective-pikachu",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorg1991/detective-pikachu.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/victorg1991/detective-pikachu/issues"
+  },
+  "homepage": "https://github.com/victorg1991/detective-pikachu#readme",
+  "dependencies": {}
+}

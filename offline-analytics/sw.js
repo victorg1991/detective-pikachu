@@ -1,0 +1,1 @@
+importScripts('/idb.js');

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Animal List</title>
+    <link rel="stylesheet" href="bulma.min.css" />
+
+    <style>
+      html {
+        overflow-y: auto;
+      }
+
+      .has-margin {
+        margin: 1em;
+      }
+
+      .has-small-margin {
+        margin: 0 0.5em 0.5em 0;
+      }
+
+      .is-line-through {
+        text-decoration: line-through;
+      }
+
+      .is-flex-wrap {
+        flex-wrap: wrap;
+      }
+
+      .progress {
+        max-width: 150px;
+        margin: 1em auto;
+      }
+
+      .next-page {
+        position: fixed;
+        bottom: 1.5em;
+        right: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container has-margin">
+      <header class="content">
+        <h1 class="title">Animal List</h1>
+
+        <p class="subtitle">
+          Click on any animal to see
+          <span class="has-text-grey is-line-through">
+            a lot of interesting information about it, including photographs,
+            videos, and a deep description about it's behaviour
+          </span>
+          it's name with big letters.
+        </p>
+
+        <nav class="is-flex is-flex-wrap">
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-aardvark.html"
+          >
+            aardvark
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-ant.html"
+          >
+            ant
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-bear.html"
+          >
+            bear
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-bee.html"
+          >
+            bee
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-bird.html"
+          >
+            bird
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-butterfly.html"
+          >
+            butterfly
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-carp.html"
+          >
+            carp
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-cat.html"
+          >
+            cat
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-chicken.html"
+          >
+            chicken
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-dog.html"
+          >
+            dog
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-dolphin.html"
+          >
+            dolphin
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-donkey.html"
+          >
+            donkey
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-eagle.html"
+          >
+            eagle
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-elephant.html"
+          >
+            elephant
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-fish.html"
+          >
+            fish
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-frog.html"
+          >
+            frog
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-giraffe.html"
+          >
+            giraffe
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-goat.html"
+          >
+            goat
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-hamster.html"
+          >
+            hamster
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-hen.html"
+          >
+            hen
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-human.html"
+          >
+            human
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-insect.html"
+          >
+            insect
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-lion.html"
+          >
+            lion
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-lizard.html"
+          >
+            lizard
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-lynx.html"
+          >
+            lynx
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-mammal.html"
+          >
+            mammal
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-monkey.html"
+          >
+            monkey
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-narwhal.html"
+          >
+            narwhal
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-octopus.html"
+          >
+            octopus
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-otter.html"
+          >
+            otter
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-owl.html"
+          >
+            owl
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-ox.html"
+          >
+            ox
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-panda.html"
+          >
+            panda
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-penguin.html"
+          >
+            penguin
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-pig.html"
+          >
+            pig
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-rabbit.html"
+          >
+            rabbit
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-rinho.html"
+          >
+            rinho
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-shark.html"
+          >
+            shark
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-snail.html"
+          >
+            snail
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-snake.html"
+          >
+            snake
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-spider.html"
+          >
+            spider
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-tiger.html"
+          >
+            tiger
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-unicorn.html"
+          >
+            unicorn
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-vulture.html"
+          >
+            vulture
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-worm.html"
+          >
+            worm
+          </a>
+          <a
+            class="tag is-link is-capitalized is-medium has-small-margin"
+            href="/pages/page-zebra.html"
+          >
+            zebra
+          </a>
+        </nav>
+      </header>
+
+      <article
+        class="
+          content
+          is-capitalized
+          is-size-1
+          has-text-weight-bold
+          has-text-success
+          has-text-centered
+        "
+        id="content"
+      ></article>
+
+      <aside>
+        <span class="tag is-dark next-page" id="nextPage">
+          ???
+        </span>
+      </aside>
+    </main>
+
+    <script>
+      const content = document.getElementById('content');
+      const nextPage = document.getElementById('nextPage');
+      let lastPromise;
+
+      function setNextPageURL(nextPageURL = '???') {
+        nextPage.innerText = nextPageURL;
+      }
+
+      function setLoading() {
+        content.innerHTML = `
+            <progress class="progress is-small is-success" max="100">
+            </progress>
+          `;
+      }
+
+      function unselectTags() {
+        document.querySelectorAll('.tag.is-success').forEach((tag) => {
+          tag.classList.replace('is-success', 'is-link');
+        });
+      }
+
+      function selectTag(tag) {
+        tag.classList.replace('is-link', 'is-success');
+      }
+
+      document.addEventListener('click', (event) => {
+        if (event.target.href) {
+          event.preventDefault();
+
+          setLoading();
+          setNextPageURL();
+          unselectTags();
+          selectTag(event.target);
+
+          const promise = fetch(event.target.href)
+            .then((response) => response.text())
+            .then((pageContent) => {
+              if (lastPromise === promise) {
+                content.innerText = pageContent;
+              }
+            });
+
+          lastPromise = promise;
+        }
+      });
+
+      navigator.serviceWorker.onmessage = (message) => {
+        if (message.data) {
+          setNextPageURL(message.data);
+        }
+      };
+
+      navigator.serviceWorker.register('/sw.js');
+    </script>
+  </body>
+</html>
