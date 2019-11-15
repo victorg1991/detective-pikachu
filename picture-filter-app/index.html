@@ -1,71 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Picture Filter</title>
-    <link rel="stylesheet" href="bulma.min.css" />
-  </head>
-  <body>
-    <label for="fileInput">File Input</label>
-    <input id="fileInput" type="file" accept=".jpg, .jpeg, .png"/>
-    <div>
-        <h1 class="title is-1">Original</h1>
-        <canvas id="original-canvas"></canvas>
-        <button onclick="toGrayScale()">Grayscale</button>
-        <button onclick="toRedish()">Redish</button>
-        <h1 class="title is-1">Filter</h1>
-        <canvas id="filtered-canvas"></canvas>
-    </div>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Picture Filter</title>
+  <link rel="stylesheet" href="bulma.min.css" />
+</head>
+
+<body>
+  <label for="fileInput">File Input</label>
+  <input id="fileInput" type="file" accept=".jpg, .jpeg, .png" />
+  <div>
+    <h1 class="title is-1">Original</h1>
+    <canvas id="original-canvas"></canvas>
+    <button onclick="toGrayScale()">Grayscale</button>
+    <button onclick="toRedish()">Redish</button>
+    <button onclick="toSephia()">Redish</button>
+    <h1 class="title is-1">Filter</h1>
+    <canvas id="filtered-canvas"></canvas>
+  </div>
 
 
 
-    <script>
-      const fileInput = document.getElementById('fileInput');
-      const canvas = document.getElementById('original-canvas');
-      const filteredCanvas = document.getElementById('filtered-canvas');
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('original-canvas');
+    const filteredCanvas = document.getElementById('filtered-canvas');
 
-      const ctx = canvas.getContext('2d');
-      const filtertedCtx = filteredCanvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    const filtertedCtx = filteredCanvas.getContext('2d');
 
-      function toGrayScale() {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    function toGrayScale() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        for (i= 0; i < imageData.width * imageData.height * 4; i += 4) {
-          const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
+        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
 
-          imageData.data[i] =  avg;
-          imageData.data[i + 1] = avg;
-          imageData.data[i + 2] = avg;
-        }
-
-        filtertedCtx.putImageData(imageData, 0, 0);
+        imageData.data[i] = avg;
+        imageData.data[i + 1] = avg;
+        imageData.data[i + 2] = avg;
       }
 
-      function toRedish() {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      filtertedCtx.putImageData(imageData, 0, 0);
+    }
 
-        for (i= 0; i < imageData.width * imageData.height * 4; i += 4) {
-          const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+    function toRedish() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-          imageData.data[i] +=  100;
-        }
+      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
+        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
 
-        filtertedCtx.putImageData(imageData, 0, 0);
+        imageData.data[i] += 100;
       }
 
-      fileInput.addEventListener('change', (evt) => {
-        const file = fileInput.files[0];
+      filtertedCtx.putImageData(imageData, 0, 0);
+    }
 
-        createImageBitmap(file).then(bitmap => {
-          canvas.width = bitmap.width;
-          canvas.height = bitmap.height;
-          filteredCanvas.width = bitmap.width;
-          filteredCanvas.height = bitmap.height;
+    function toSephia() {
 
-          ctx.drawImage(bitmap, 0, 0);
-        });
-      })
 
-    </script>
-  </body>
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
+        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+
+        const r = imageData.data[i];
+        const g = imageData.data[i + 1];
+        const b = imageData.data[i + 2];
+
+        imageData.data[i] = (r * 0.393) + (g * 0.769) + (b * 0.189)
+        imageData.data[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168)
+        imageData.data[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131)
+      }
+
+      filtertedCtx.putImageData(imageData, 0, 0);
+    }
+
+    fileInput.addEventListener('change', (evt) => {
+      const file = fileInput.files[0];
+
+      createImageBitmap(file).then(bitmap => {
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        filteredCanvas.width = bitmap.width;
+        filteredCanvas.height = bitmap.height;
+
+        ctx.drawImage(bitmap, 0, 0);
+      });
+    })
+
+  </script>
+</body>
+
 </html>
