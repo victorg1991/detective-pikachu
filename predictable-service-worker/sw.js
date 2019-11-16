@@ -67,6 +67,8 @@ async function cachePage(url) {
   const cache = await caches.open(CACHE_ID);
   const request = new Request(url);
 
+  // TODO keep n cache entries
+  // TODO show cache size
   await Promise.all((await cache.keys()).map((key) => cache.delete(key)));
 
   if (!(await cache.match(request))) {
