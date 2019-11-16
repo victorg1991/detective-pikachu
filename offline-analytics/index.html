@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="bulma.min.css" />
+    <title>Offline Analytics</title>
+  </head>
+  <body>
+    <article class="content">
+      <h1 class="title">Home</h1>
+
+      <button
+        class="button is-primary is-small"
+        name="requestTarta"
+        type="button"
+        onclick="window.sendAnalyticsEvent('buttonClicked', '#requestTarta');"
+      >
+        I want tarta
+      </button>
+    </article>
+
+    <script>
+      window.sendAnalyticsEvent = (name, payload) => {
+        navigator.serviceWorker.controller.postMessage({
+          name,
+          payload,
+        });
+      };
+
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        window.sendAnalyticsEvent('url', location.href);
+      });
+    </script>
+  </body>
+</html>
