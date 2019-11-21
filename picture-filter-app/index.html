@@ -13,67 +13,74 @@
   <div>
     <h1 class="title is-1">Original</h1>
     <canvas id="original-canvas"></canvas>
-    <button onclick="toGrayScale()">Grayscale</button>
-    <button onclick="toRedish()">Redish</button>
-    <button onclick="toSephia()">Redish</button>
-    <h1 class="title is-1">Filter</h1>
-    <canvas id="filtered-canvas"></canvas>
+    <div>
+      <button onclick="toGrayScale()">Grayscale</button>
+      <button onclick="higherTransparency()">Transparency</button>
+      <button onclick="toSephia()">Sephia</button>
+    </div>
+    <div id="loading" style="display: none;">
+      <b>Loading...</b>
+    </div>
+      <h1 class="title is-1">Filter</h1>
+      <canvas id="filtered-canvas"></canvas>
   </div>
-
-
 
   <script>
     const fileInput = document.getElementById('fileInput');
     const canvas = document.getElementById('original-canvas');
     const filteredCanvas = document.getElementById('filtered-canvas');
+    const loading = document.getElementById('loading');
 
     const ctx = canvas.getContext('2d');
     const filtertedCtx = filteredCanvas.getContext('2d');
 
-    function toGrayScale() {
+    function applyFilter(filter) {
+      loading.style.display = 'block';
+
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
       for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
-        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+        const {[i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a} = imageData.data;
 
-        imageData.data[i] = avg;
-        imageData.data[i + 1] = avg;
-        imageData.data[i + 2] = avg;
+        const [newR, newG, newB, newA] = filter(r, g, b, a);
+
+        imageData.data[i] = newR;
+        imageData.data[i + 1] = newG;
+        imageData.data[i + 2] = newB;
+        imageData.data[i + 3] = newA;
       }
 
       filtertedCtx.putImageData(imageData, 0, 0);
+
+      loading.style.display = 'none';
     }
 
-    function toRedish() {
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    function toGrayScale() {
 
-      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
-        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
 
-        imageData.data[i] += 100;
-      }
+      applyFilter((r, g, b, a) => {
+        const avg = (r + g + b) / 3;
 
-      filtertedCtx.putImageData(imageData, 0, 0);
+        return [avg, avg, avg, a];
+      });
+    }
+
+    function higherTransparency() {
+      applyFilter((r, g, b, a) =>{
+        const newA = a/2;
+
+        return [r, g, b, newA];
+      });
     }
 
     function toSephia() {
+      applyFilter((r, g, b, a) => {
+        const newR = (r * 0.393) + (g * 0.769) + (b * 0.189)
+        const newG = (r * 0.349) + (g * 0.686) + (b * 0.168)
+        const newB = (r * 0.272) + (g * 0.534) + (b * 0.131)
 
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
-        const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-
-        const r = imageData.data[i];
-        const g = imageData.data[i + 1];
-        const b = imageData.data[i + 2];
-
-        imageData.data[i] = (r * 0.393) + (g * 0.769) + (b * 0.189)
-        imageData.data[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168)
-        imageData.data[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131)
-      }
-
-      filtertedCtx.putImageData(imageData, 0, 0);
+        return [newR, newG, newB, a];
+      });
     }
 
     fileInput.addEventListener('change', (evt) => {
