@@ -9,26 +9,45 @@
     <article class="content">
       <h1 class="title">Home</h1>
 
-      <button
-        class="button is-primary is-small"
-        name="requestTarta"
-        type="button"
-        onclick="window.sendAnalyticsEvent('buttonClicked', '#requestTarta');"
-      >
+      <button class="button" name="pizza" type="button">
+        I want pizza
+      </button>
+
+      <button class="button" name="tarta" type="button">
         I want tarta
       </button>
     </article>
 
     <script>
-      window.sendAnalyticsEvent = (name, payload) => {
-        navigator.serviceWorker.controller.postMessage({
-          name,
-          payload,
-        });
+      window.sendMessage = (type, payload) => {
+        if (navigator.serviceWorker.controller) {
+          console.log('Send message');
+          navigator.serviceWorker.controller.postMessage({ type, payload });
+        } else {
+          console.log('Service worker not available');
+        }
       };
 
+      document.addEventListener('click', (event) => {
+        if (event.target.tagName === 'BUTTON') {
+          window.sendMessage('event', {
+            date: new Date(),
+            name: 'buttonClicked',
+            payload: event.target.name,
+          });
+        }
+      });
+
+      window.addEventListener('online', () => {
+        window.sendMessage('onlineStatus', navigator.onLine);
+      });
+
       navigator.serviceWorker.register('/sw.js').then(() => {
-        window.sendAnalyticsEvent('url', location.href);
+        window.sendMessage('event', {
+          date: new Date(),
+          name: 'url',
+          payload: location.href,
+        });
       });
     </script>
   </body>

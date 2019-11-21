@@ -1,13 +1,10 @@
 self.idb = {
-  handleIDBRequest(request) {
-    return new Promise((resolve, reject) => {
-      request.onerror = reject;
-      request.onsuccess = () => resolve(request.result);
-    });
-  },
-
   deleteDatabase(...args) {
-    return this.handleIDBRequest(indexedDB.deleteDatabase(...args));
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.deleteDatabase(...args);
+      request.onerror = reject;
+      request.onsuccess = resolve;
+    });
   },
 
   open(name, version, onUpgrade) {
@@ -22,7 +19,6 @@ self.idb = {
   add(database, storeName, item) {
     return new Promise((resolve, reject) => {
       const transaction = database.transaction([storeName], 'readwrite');
-
       transaction.oncomplete = () => resolve();
       transaction.onerror = reject;
       transaction.objectStore(storeName).add(item);
