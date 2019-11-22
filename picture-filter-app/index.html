@@ -14,12 +14,15 @@
     <h1 class="title is-1">Original</h1>
     <canvas id="original-canvas"></canvas>
     <div>
-      <button onclick="toGrayScale()">Grayscale</button>
-      <button onclick="higherTransparency()">Transparency</button>
-      <button onclick="toSephia()">Sephia</button>
+      <button onclick="applyFilter('grayscale')">Grayscale</button>
+      <button onclick="applyFilter('transparency')">Transparency</button>
+      <button onclick="applyFilter('sephia')">Sephia</button>
     </div>
     <div id="loading" style="display: none;">
       <b>Loading...</b>
+      <p id="percentage">
+
+      </p>
     </div>
       <h1 class="title is-1">Filter</h1>
       <canvas id="filtered-canvas"></canvas>
@@ -30,56 +33,32 @@
     const canvas = document.getElementById('original-canvas');
     const filteredCanvas = document.getElementById('filtered-canvas');
     const loading = document.getElementById('loading');
+    const percentage = document.getElementById('percentage');
 
     const ctx = canvas.getContext('2d');
     const filtertedCtx = filteredCanvas.getContext('2d');
 
+    const worker = new Worker('worker.js');
+
     function applyFilter(filter) {
       loading.style.display = 'block';
+      percentage.textContent = '';
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
-        const {[i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a} = imageData.data;
+      worker.postMessage({imageData, filter}, [imageData.data.buffer]);
 
-        const [newR, newG, newB, newA] = filter(r, g, b, a);
+      worker.addEventListener('message', (event) => {
+        if (event.data.percentage) {
+          percentage.textContent = event.data.percentage + '%';
+          return;
+        }
 
-        imageData.data[i] = newR;
-        imageData.data[i + 1] = newG;
-        imageData.data[i + 2] = newB;
-        imageData.data[i + 3] = newA;
-      }
+        const imageData = event.data;
 
-      filtertedCtx.putImageData(imageData, 0, 0);
+        filtertedCtx.putImageData(imageData, 0, 0);
 
-      loading.style.display = 'none';
-    }
-
-    function toGrayScale() {
-
-
-      applyFilter((r, g, b, a) => {
-        const avg = (r + g + b) / 3;
-
-        return [avg, avg, avg, a];
-      });
-    }
-
-    function higherTransparency() {
-      applyFilter((r, g, b, a) =>{
-        const newA = a/2;
-
-        return [r, g, b, newA];
-      });
-    }
-
-    function toSephia() {
-      applyFilter((r, g, b, a) => {
-        const newR = (r * 0.393) + (g * 0.769) + (b * 0.189)
-        const newG = (r * 0.349) + (g * 0.686) + (b * 0.168)
-        const newB = (r * 0.272) + (g * 0.534) + (b * 0.131)
-
-        return [newR, newG, newB, a];
+        loading.style.display = 'none';
       });
     }
 
@@ -94,8 +73,7 @@
 
         ctx.drawImage(bitmap, 0, 0);
       });
-    })
-
+    });
   </script>
 </body>
 
