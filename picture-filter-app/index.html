@@ -1,80 +1,87 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Picture Filter</title>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-<head>
-  <meta charset="utf-8" />
-  <title>Picture Filter</title>
-  <link rel="stylesheet" href="bulma.min.css" />
-</head>
+      .section {
+        margin: 2px;
+      }
+    </style>
+    <link rel="stylesheet" href="bulma.min.css" />
+  </head>
 
-<body>
-  <label for="fileInput">File Input</label>
-  <input id="fileInput" type="file" accept=".jpg, .jpeg, .png" />
-  <div>
-    <h1 class="title is-1">Original</h1>
-    <canvas id="original-canvas"></canvas>
-    <div>
-      <button onclick="applyFilter('grayscale')">Grayscale</button>
-      <button onclick="applyFilter('transparency')">Transparency</button>
-      <button onclick="applyFilter('sephia')">Sephia</button>
-    </div>
-    <div id="loading" style="display: none;">
-      <b>Loading...</b>
-      <p id="percentage">
-
-      </p>
-    </div>
+  <body>
+    <div class="container">
+      <div class="section">
+          <label class="button is-info" for="fileInput">Select an image</label>
+          <input class="is-sr-only" id="fileInput" type="file" accept=".jpg, .jpeg, .png" />
+      </div>
+      <h1 class="title is-1">Original</h1>
+      <canvas id="original-canvas"></canvas>
+      <div class="section">
+        <button class="button is-link is-outlined" onclick="applyFilter('grayscale')">Grayscale</button>
+        <button class="button is-link is-outlined" onclick="applyFilter('transparency')">Transparency</button>
+        <button class="button is-link is-outlined" onclick="applyFilter('sephia')">Sephia</button>
+      </div>
+      <progress id="loading" class="progress is-info" value="0" max="100"></progress>
       <h1 class="title is-1">Filter</h1>
       <canvas id="filtered-canvas"></canvas>
-  </div>
+    </div>
 
-  <script>
-    const fileInput = document.getElementById('fileInput');
-    const canvas = document.getElementById('original-canvas');
-    const filteredCanvas = document.getElementById('filtered-canvas');
-    const loading = document.getElementById('loading');
-    const percentage = document.getElementById('percentage');
+    <script>
+      const fileInput = document.getElementById('fileInput');
+      const canvas = document.getElementById('original-canvas');
+      const filteredCanvas = document.getElementById('filtered-canvas');
+      const loading = document.getElementById('loading');
+      loading.style.display = 'none';
 
-    const ctx = canvas.getContext('2d');
-    const filtertedCtx = filteredCanvas.getContext('2d');
+      const ctx = canvas.getContext('2d');
+      const filtertedCtx = filteredCanvas.getContext('2d');
 
-    const worker = new Worker('worker.js');
+      const worker = new Worker('worker.js');
 
-    function applyFilter(filter) {
-      loading.style.display = 'block';
-      percentage.textContent = '';
+      function applyFilter(filter) {
+        loading.style.display = 'block';
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      worker.postMessage({imageData, filter}, [imageData.data.buffer]);
+        worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
 
-      worker.addEventListener('message', (event) => {
-        if (event.data.percentage) {
-          percentage.textContent = event.data.percentage + '%';
-          return;
-        }
+        worker.addEventListener('message', (event) => {
+          if (event.data.percentage) {
+            loading.value = event.data.percentage;
+            loading.textContent = event.data.percentage + '%';
+            return;
+          }
 
-        const imageData = event.data;
+          const imageData = event.data;
 
-        filtertedCtx.putImageData(imageData, 0, 0);
+          filtertedCtx.putImageData(imageData, 0, 0);
 
-        loading.style.display = 'none';
+          loading.value = 0;
+          loading.style.display = 'none';
+        });
+      }
+
+      fileInput.addEventListener('change', (evt) => {
+        const file = fileInput.files[0];
+
+        createImageBitmap(file).then((bitmap) => {
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+          filteredCanvas.width = bitmap.width;
+          filteredCanvas.height = bitmap.height;
+
+          ctx.drawImage(bitmap, 0, 0);
+        });
       });
-    }
-
-    fileInput.addEventListener('change', (evt) => {
-      const file = fileInput.files[0];
-
-      createImageBitmap(file).then(bitmap => {
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        filteredCanvas.width = bitmap.width;
-        filteredCanvas.height = bitmap.height;
-
-        ctx.drawImage(bitmap, 0, 0);
-      });
-    });
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>

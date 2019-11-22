@@ -16,16 +16,17 @@ self.addEventListener('message', (event) => {
 
 function applyFilter(imageData, filter) {
   const pixelLength = imageData.width * imageData.height * 4;
+  let percentage = 0;
 
   for (i = 0; i < pixelLength; i += 4) {
     const { [i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a } = imageData.data;
 
-    if (i === parseInt(pixelLength / 4, 10)) {
-      self.postMessage({ percentage: 25 });
-    } else if (i === parseInt(pixelLength / 2, 10)) {
-      self.postMessage({ percentage: 50 });
-    } else if (i === parseInt((pixelLength * 3) / 4, 10)) {
-      self.postMessage({ percentage: 75 });
+    const percentageDone = parseInt((i / pixelLength) * 100, 10);
+
+    if (percentageDone - percentage >= 5) {
+      percentage = percentageDone;
+
+      self.postMessage({ percentage: percentageDone });
     }
 
     const [newR, newG, newB, newA] = filter(r, g, b, a);
