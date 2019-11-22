@@ -15,7 +15,6 @@
   "homepage": "https://github.com/victorg1991/detective-pikachu#readme",
   "dependencies": {
     "browser-sync": "^2.26.7",
-    "bulma": "^0.8.0",
     "enquirer": "^2.3.2",
     "glob": "^7.1.6"
   }
