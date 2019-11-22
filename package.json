@@ -13,9 +13,5 @@
     "url": "https://github.com/victorg1991/detective-pikachu/issues"
   },
   "homepage": "https://github.com/victorg1991/detective-pikachu#readme",
-  "dependencies": {
-    "browser-sync": "^2.26.7",
-    "enquirer": "^2.3.2",
-    "glob": "^7.1.6"
-  }
+  "dependencies": {}
 }
