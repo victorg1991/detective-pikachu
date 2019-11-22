@@ -1,32 +1,16 @@
-# Web workers
-# Introducción
-Preguntita de que quieren que hablemos, la respuesta va a ser siempre workers, a no ser que no nos de tiempo y hablemos de detective Pikachu 2 horas
+# JS Workers
 
-## WebWorker
-Aplicación que de fotos
-	* Filtros 
-	* Lista larga (Web worker)
-	* Spell checking
+Somos FrontEnds, así que como somos super chachis podemos decir cosas como
+Fornait, Detectible Picachu y Crastin Racing. Pero como todos estos temas ocupan
+demasiado tiempo y no lo tenemos en el taller, pues mejor hablamos de JS
+Workers, que lleva un pelín menos y es muy chachi.
 
+> Slides: https://docs.google.com/presentation/d/10GJdB_C95jc7JPwXqgH45Qg_x_VUjeoDd4TXrTrHdAg/edit
 
-# Service worker
-- - - -
-Montar algo con esto:
-[GitHub - guess-js/guess: Libraries & tools for enabling Machine Learning driven user-experiences on the web](https://github.com/guess-js/guess) 
-**Offline Analytics**
-- - - -
+## Offline analytics
 
-Notificaciones
-Support for a new image format
-https://dexecure.com/blog/beyond-offline-other-interesting-use-cases-for-service-workers-2/
-Logica de reintento
+## Magical ServiceWorker
 
-# CSS Paint
-Ver Houdini
-... Buscar ejemplos ...
+## Long List
 
-# SharedWorker
-https://blog.sessionstack.com/how-javascript-works-the-building-blocks-of-web-workers-5-cases-when-you-should-use-them-a547c0757f6a
-
-
-
+## Image editor
