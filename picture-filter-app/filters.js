@@ -1,4 +1,4 @@
-function applyFilter(imageData, filter) {
+function applyFilter(imageData, filter, percentageFn) {
   if (filter === 'grayscale') {
     filterFn = toGrayScale;
   } else if (filter === 'transparency') {
@@ -7,7 +7,18 @@ function applyFilter(imageData, filter) {
     filterFn = toSephia;
   }
 
+  let percentage = 0;
+
+  const length = imageData.width * imageData.height * 4;
+
   for (i = 0; i < imageData.width * imageData.height * 4; i += 4) {
+    const percentageDone = parseInt((i / length) * 100, 10);
+
+    if (percentageDone - percentage >= 5) {
+      percentage = percentageDone;
+      percentageFn(percentage);
+    }
+
     const { [i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a } = imageData.data;
 
     const [newR, newG, newB, newA] = filterFn(r, g, b, a);

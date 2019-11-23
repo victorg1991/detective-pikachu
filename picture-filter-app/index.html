@@ -52,9 +52,12 @@
           Sephia
         </button>
       </div>
-      <div id="loading">
-        Loading...
-      </div>
+      <progress
+        id="loading"
+        class="progress is-info"
+        value="0"
+        max="100"
+      ></progress>
       <h1 class="title is-1">Filter</h1>
       <canvas id="filtered-canvas"></canvas>
     </div>
@@ -78,9 +81,17 @@
         console.time('filter');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        worker.postMessage({imageData, filter}, [imageData.data.buffer]);
+        worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
 
         worker.addEventListener('message', (event) => {
+          if (event.data.percentage) {
+            const percentage = event.data.percentage;
+
+            loading.value = percentage;
+            loading.textContent = percentage + '%';
+            return;
+          }
+
           const imageData = event.data;
 
           filtertedCtx.putImageData(imageData, 0, 0);
@@ -88,6 +99,8 @@
           console.timeEnd('filter');
 
           loading.style.display = 'none';
+          loading.value = 0;
+          loading.textContent = '';
         });
       }
 
