@@ -1,5 +1,5 @@
 self.addEventListener('message', (event) => {
-  const { chunk, filter, index } = event.data;
+  const { imageData, filter } = event.data;
 
   let filterFn;
 
@@ -11,30 +11,33 @@ self.addEventListener('message', (event) => {
     filterFn = toSephia;
   }
 
-  applyFilter(chunk, filterFn, index);
+  applyFilter(imageData, filterFn);
 });
 
-function applyFilter(chunk, filter, index) {
-  for (i = 0; i < chunk.length; i += 4) {
-    const { [i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a } = chunk;
+function applyFilter(imageData, filter) {
+  const pixelLength = imageData.width * imageData.height * 4;
+  let percentage = 0;
 
-    // const percentageDone = parseInt((i / pixelLength) * 100, 10);
+  for (i = 0; i < pixelLength; i += 4) {
+    const { [i]: r, [i + 1]: g, [i + 2]: b, [i + 3]: a } = imageData.data;
 
-    // if (percentageDone - percentage >= 5) {
-    //   percentage = percentageDone;
+    const percentageDone = parseInt((i / pixelLength) * 100, 10);
 
-    //   self.postMessage({ percentage: percentageDone });
-    // }
+    if (percentageDone - percentage >= 5) {
+      percentage = percentageDone;
+
+      self.postMessage({ percentage: percentageDone });
+    }
 
     const [newR, newG, newB, newA] = filter(r, g, b, a);
 
-    chunk[i] = newR;
-    chunk[i + 1] = newG;
-    chunk[i + 2] = newB;
-    chunk[i + 3] = newA;
+    imageData.data[i] = newR;
+    imageData.data[i + 1] = newG;
+    imageData.data[i + 2] = newB;
+    imageData.data[i + 3] = newA;
   }
 
-  self.postMessage({ chunk, index });
+  self.postMessage(imageData, [imageData.data.buffer]);
 }
 
 function toGrayScale(r, g, b, a) {

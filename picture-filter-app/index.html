@@ -47,97 +47,27 @@
 
       const worker = new Worker('worker.js');
 
-      let t1;
-      let t2;
-
-      let imageData;
-
-      function concatenate(resultConstructor, ...arrays) {
-          let totalLength = 0;
-          for (let arr of arrays) {
-              totalLength += arr.length;
-          }
-          let result = new resultConstructor(totalLength);
-          let offset = 0;
-          for (let arr of arrays) {
-              result.set(arr, offset);
-              offset += arr.length;
-          }
-          return result;
-        }
-      function copyImage(data) {
-
-        const test = concatenate(Uint8Array, ...data);
-        console.log(test);
-
-        const newImageData = ctx.createImageData(imageData.width, imageData.height);
-        newImageData.data.set(test);
-
-        filtertedCtx.putImageData(newImageData, 0, 0);
-
-        t2 = performance.now();
-
-        console.log(t2 - t1);
-      }
-
       function applyFilter(filter) {
         loading.style.display = 'block';
 
-        t1 = performance.now();
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const chunks = splitData(imageData);
+        worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
 
-        const filteredChunks = [];
-        for (let i = 0; i < chunks.length; i++) {
-          const worker = new Worker('worker.js');
+        worker.addEventListener('message', (event) => {
+          if (event.data.percentage) {
+            loading.value = event.data.percentage;
+            loading.textContent = event.data.percentage + '%';
+            return;
+          }
 
-          worker.postMessage({ chunk: chunks[i], filter, index: i });
+          const imageData = event.data;
 
-          worker.addEventListener('message', (event) => {
-            const {index, chunk} = event.data;
+          filtertedCtx.putImageData(imageData, 0, 0);
 
-            filteredChunks[index] = chunk;
-
-            console.log(index);
-
-            console.log("length", filteredChunks.length);
-            if (filteredChunks.length === 4){
-              copyImage(filteredChunks);
-            }
-          });
-        }
-
-
-
-        // worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
-
-        // worker.addEventListener('message', (event) => {
-        //   if (event.data.percentage) {
-        //     loading.value = event.data.percentage;
-        //     loading.textContent = event.data.percentage + '%';
-        //     return;
-        //   }
-
-        //   const imageData = event.data;
-
-        //   filtertedCtx.putImageData(imageData, 0, 0);
-
-        //   loading.value = 0;
-        //   loading.style.display = 'none';
-        // });
-      }
-
-      function splitData(imageData) {
-        const length = imageData.width * imageData.height * 4;
-        const step = parseInt(length / 4);
-
-        const chunks = []
-        for (let i = 0; i < length; i+= step) {
-          chunks.push(imageData.data.slice(i, i + step));
-        }
-
-        return chunks;
+          loading.value = 0;
+          loading.style.display = 'none';
+        });
       }
 
       fileInput.addEventListener('change', (evt) => {
