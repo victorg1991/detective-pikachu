@@ -13,3 +13,7 @@ self.addEventListener('activate', () => {
   self.clients.claim();
   console.log('SW activated');
 });
+
+self.addEventListener('message', (event) => {
+  console.log(event.data);
+});

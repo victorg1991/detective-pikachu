@@ -19,6 +19,36 @@
     </article>
 
     <script>
+      const sendMessage = (type, payload) => {
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ type, payload });
+        } else {
+          console.log('SW not available');
+        }
+      };
+
+      document.addEventListener('click', (event) => {
+        if (event.target instanceof HTMLButtonElement) {
+          sendMessage('event', {
+            date: new Date(),
+            name: 'buttonClick',
+            payload: event.target.name,
+          });
+        }
+      });
+
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        sendMessage('event', {
+          date: new Date(),
+          name: 'url',
+          payload: location.href,
+        });
+      });
+
+      window.addEventListener('online', () => {
+        sendMessage('onlineStatusChanged');
+      });
+
       navigator.serviceWorker.register('/sw.js').then(() => {
         console.log('SW registered');
       });
