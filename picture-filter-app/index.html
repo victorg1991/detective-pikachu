@@ -65,6 +65,8 @@
       const filteredCanvas = document.getElementById('filtered-canvas');
       const loading = document.getElementById('loading');
 
+      const worker = new Worker('worker.js');
+
       loading.style.display = 'none';
 
       const ctx = canvas.getContext('2d');
@@ -73,13 +75,20 @@
       function onClick(filter) {
         loading.style.display = 'block';
 
+        console.time('filter');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        applyFilter(imageData, filter);
+        worker.postMessage({imageData, filter}, [imageData.data.buffer]);
 
-        filtertedCtx.putImageData(imageData, 0, 0);
+        worker.addEventListener('message', (event) => {
+          const imageData = event.data;
 
-        loading.style.display = 'none';
+          filtertedCtx.putImageData(imageData, 0, 0);
+
+          console.timeEnd('filter');
+
+          loading.style.display = 'none';
+        });
       }
 
       fileInput.addEventListener('change', (evt) => {
