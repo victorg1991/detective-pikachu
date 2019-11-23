@@ -36,5 +36,15 @@ self.addEventListener('fetch', async (event) => {
 
     event.respondWith(responsePromise);
     await responsePromise;
+
+    const nextPageUrl = NEXT_PAGE_MAP[pathname];
+
+    if (nextPageUrl) {
+      await caches.delete(CACHE_ID);
+      const cache = await caches.open(CACHE_ID);
+      const client = await clients.get(event.clientId);
+      await cache.add(nextPageUrl);
+      client.postMessage(nextPageUrl);
+    }
   }
 });
