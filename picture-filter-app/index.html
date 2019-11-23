@@ -74,7 +74,7 @@
         console.time('filter');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        worker.postMessage({imageData, filter});
+        worker.postMessage({imageData, filter}, [imageData.data.buffer]);
 
         worker.addEventListener('message', (event) => {
           const imageData = event.data;

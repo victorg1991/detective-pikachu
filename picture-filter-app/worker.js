@@ -5,5 +5,5 @@ addEventListener('message', (event) => {
 
   applyFilter(imageData, filter);
 
-  postMessage(imageData);
+  postMessage(imageData, [imageData.data.buffer]);
 });
