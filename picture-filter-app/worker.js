@@ -1,11 +1,9 @@
 importScripts('filters.js');
 
 addEventListener('message', (event) => {
-  const { imageData, filter } = event.data;
+  const { chunk, filter } = event.data;
 
-  applyFilter(imageData, filter, (percentage) => {
-    postMessage({ percentage });
-  });
+  applyFilter(chunk, filter);
 
-  postMessage(imageData, [imageData.data.buffer]);
+  postMessage(chunk, [chunk.buffer]);
 });
