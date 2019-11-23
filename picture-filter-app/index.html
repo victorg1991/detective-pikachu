@@ -48,12 +48,9 @@
           Sephia
         </button>
       </div>
-      <progress
-        id="loading"
-        class="progress is-info"
-        value="0"
-        max="100"
-      ></progress>
+      <div id="loading">
+        Loading...
+      </div>
       <h1 class="title is-1">Filter</h1>
       <canvas id="filtered-canvas"></canvas>
     </div>
@@ -64,40 +61,79 @@
       const filteredCanvas = document.getElementById('filtered-canvas');
       const loading = document.getElementById('loading');
 
-      const worker = new Worker('worker.js');
-
       loading.style.display = 'none';
 
       const ctx = canvas.getContext('2d');
       const filtertedCtx = filteredCanvas.getContext('2d');
 
+      let imageData;
+
       function onClick(filter) {
         loading.style.display = 'block';
 
         console.time('filter');
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
+        const chunks = splitData(imageData);
 
-        worker.addEventListener('message', (event) => {
-          if (event.data.percentage) {
-            const percentage = event.data.percentage;
+        const promises = chunks.map((chunk) => {
+          const worker = new Worker('worker.js');
 
-            loading.value = percentage;
-            loading.textContent = percentage + '%';
-            return;
-          }
+          worker.postMessage({ chunk, filter }, [chunk.buffer]);
 
-          const imageData = event.data;
+          return new Promise((resolve) => {
+            worker.addEventListener('message', (event) => {
+              worker.terminate();
 
-          filtertedCtx.putImageData(imageData, 0, 0);
-
-          console.timeEnd('filter');
-
-          loading.style.display = 'none';
-          loading.value = 0;
-          loading.textContent = '';
+              resolve(event.data);
+            });
+          });
         });
+
+        Promise.all(promises).then((images) => {
+          mergeAndSetImage(images);
+        });
+      }
+
+      function concatenate(...arrays) {
+        let totalLength = 0;
+        for (let arr of arrays) {
+          totalLength += arr.length;
+        }
+        let result = new Uint8ClampedArray(totalLength);
+        let offset = 0;
+        for (let arr of arrays) {
+          result.set(arr, offset);
+          offset += arr.length;
+        }
+        return result;
+      }
+
+      function splitData(imageData) {
+        const length = imageData.width * imageData.height * 4;
+        const step = parseInt(length / 4);
+
+        const chunks = [];
+        for (let i = 0; i < length; i += step) {
+          chunks.push(imageData.data.slice(i, i + step));
+        }
+
+        return chunks;
+      }
+
+      function mergeAndSetImage(data) {
+        const newData = concatenate(...data);
+
+        const newImageData = ctx.createImageData(
+          imageData.width,
+          imageData.height,
+        );
+        newImageData.data.set(newData);
+
+        filtertedCtx.putImageData(newImageData, 0, 0);
+
+        console.timeEnd('filter');
+        loading.style.display = 'none';
       }
 
       fileInput.addEventListener('change', (evt) => {
