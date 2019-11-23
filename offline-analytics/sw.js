@@ -30,13 +30,28 @@ self.addEventListener('activate', () => {
 });
 
 self.addEventListener('message', async (event) => {
-  if (event.data && event.data.name) {
-    const db = await openDatabase();
-    await idb.add(db, 'events', event.data);
-    db.close();
+  const db = await openDatabase();
+
+  if (event.data && event.data.payload) {
+    await idb.add(db, 'events', event.data.payload);
   }
 
   console.log(event.data);
+
+  const events = await idb.getAll(db, 'events');
+
+  if (navigator.onLine && events.length >= 5) {
+    console.group('Sending events to backend');
+    events.forEach((event) =>
+      console.log(event.date.toLocaleTimeString(), event.name, event.payload),
+    );
+    console.groupEnd();
+
+    db.close();
+    await idb.deleteDatabase(DB_ID);
+  } else {
+    db.close();
+  }
 });
 
 self.addEventListener('fetch', (event) => {
