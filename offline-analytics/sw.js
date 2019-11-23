@@ -6,14 +6,32 @@ const INDEXED_DB_ID = 'offline-analytics-1';
 const INDEXED_DB_VERSION = 1;
 const SYNC_ENTRY_COUNT = 5;
 
+/**
+ * @typedef AnalyticsEvent
+ * @property {Date} event.date
+ * @property {string} event.name
+ * @property {string} event.payload
+ */
+
+/**
+ * @param {AnalyticsEvent} event
+ * @return {string}
+ */
 function eventToString({ date, name, payload }) {
   return `${date.toLocaleTimeString()} ${name} ${payload}`;
 }
 
+/**
+ * @param {IDBDatabase} db
+ */
 function createSchema(db) {
   db.createObjectStore('events', { autoIncrement: true });
 }
 
+/**
+ * @param {AnalyticsEvent} event
+ * @return {Promise<void>}
+ */
 async function storeEvent(event) {
   const database = await idb.open(
     INDEXED_DB_ID,
@@ -26,6 +44,9 @@ async function storeEvent(event) {
   database.close();
 }
 
+/**
+ * @return {Promise<bool>}
+ */
 async function shouldSyncEvents() {
   if (navigator.onLine) {
     const database = await idb.open(
@@ -42,6 +63,9 @@ async function shouldSyncEvents() {
   return false;
 }
 
+/**
+ * @return {Promise<void>}
+ */
 async function syncEvents() {
   const database = await idb.open(
     INDEXED_DB_ID,
