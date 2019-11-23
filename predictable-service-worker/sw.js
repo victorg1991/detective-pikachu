@@ -17,23 +17,24 @@ self.addEventListener('activate', () => {
   console.log('SW activated');
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', async (event) => {
   const { pathname } = new URL(event.request.url);
 
   if (Object.values(PAGES).includes(pathname)) {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(CACHE_ID);
-        const cachedResponse = await cache.match(event.request);
+    const responsePromise = (async () => {
+      const cache = await caches.open(CACHE_ID);
+      const cachedResponse = await cache.match(event.request);
 
-        if (cachedResponse) {
-          console.log(pathname, 'from cache');
-        } else {
-          console.log(pathname, 'from server');
-        }
+      if (cachedResponse) {
+        console.log(pathname, 'from cache');
+      } else {
+        console.log(pathname, 'from server');
+      }
 
-        return cachedResponse || fetch(event.request);
-      })(),
-    );
+      return cachedResponse || fetch(event.request);
+    })();
+
+    event.respondWith(responsePromise);
+    await responsePromise;
   }
 });
