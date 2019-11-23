@@ -26,9 +26,12 @@
       <h1 class="title is-1">Original</h1>
       <canvas id="original-canvas"></canvas>
       <div class="section">
-        <button class="button is-link is-outlined" onclick="applyFilter('grayscale')">Grayscale</button>
-        <button class="button is-link is-outlined" onclick="applyFilter('transparency')">Transparency</button>
-        <button class="button is-link is-outlined" onclick="applyFilter('sephia')">Sephia</button>
+        <button class="button is-link is-outlined">Grayscale</button>
+        <button class="button is-link is-outlined">Transparency</button>
+        <button class="button is-link is-outlined">Sephia</button>
+      </div>
+      <div id="loading">
+        Loading...
       </div>
       <progress id="loading" class="progress is-info" value="0" max="100"></progress>
       <h1 class="title is-1">Filter</h1>
@@ -40,48 +43,7 @@
       const canvas = document.getElementById('original-canvas');
       const filteredCanvas = document.getElementById('filtered-canvas');
       const loading = document.getElementById('loading');
-      loading.style.display = 'none';
 
-      const ctx = canvas.getContext('2d');
-      const filtertedCtx = filteredCanvas.getContext('2d');
-
-      const worker = new Worker('worker.js');
-
-      function applyFilter(filter) {
-        loading.style.display = 'block';
-
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        worker.postMessage({ imageData, filter }, [imageData.data.buffer]);
-
-        worker.addEventListener('message', (event) => {
-          if (event.data.percentage) {
-            loading.value = event.data.percentage;
-            loading.textContent = event.data.percentage + '%';
-            return;
-          }
-
-          const imageData = event.data;
-
-          filtertedCtx.putImageData(imageData, 0, 0);
-
-          loading.value = 0;
-          loading.style.display = 'none';
-        });
-      }
-
-      fileInput.addEventListener('change', (evt) => {
-        const file = fileInput.files[0];
-
-        createImageBitmap(file).then((bitmap) => {
-          canvas.width = bitmap.width;
-          canvas.height = bitmap.height;
-          filteredCanvas.width = bitmap.width;
-          filteredCanvas.height = bitmap.height;
-
-          ctx.drawImage(bitmap, 0, 0);
-        });
-      });
     </script>
   </body>
 </html>
